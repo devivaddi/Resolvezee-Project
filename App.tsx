@@ -1,45 +1,53 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from "react-redux";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { LogBox } from 'react-native';
+import AppNavigator from "./src/navigation/AppNavigator";
+import { store } from "./src/store/store";
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+// Ignore specific warnings
+LogBox.ignoreLogs([
+  'ViewPropTypes will be removed',
+  'Require cycle:',
+  'ReactProgressBarViewManager',
+  'The app is running using the Legacy Architecture',
+  'SafeAreaView has been deprecated',
+  'ProgressBarShadowNode',
+]);
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+// Suppress New Architecture warnings in development
+if (__DEV__) {
+  const originalConsoleWarn = console.warn;
+  console.warn = function (...args) {
+    const message = args[0];
+    if (typeof message === 'string') {
+      // Suppress specific warnings
+      if (
+        message.includes('ReactProgressBarViewManager') ||
+        message.includes('ProgressBarShadowNode') ||
+        message.includes('Legacy Architecture') ||
+        message.includes('SafeAreaView has been deprecated') ||
+        message.includes('ViewPropTypes') ||
+        message.includes('Require cycle')
+      ) {
+        return;
+      }
+    }
+    originalConsoleWarn.apply(console, args);
+  };
+}
 
+const App = () => {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <Provider store={store}>
+        <NavigationContainer>
+          <AppNavigator />
+        </NavigationContainer>
+      </Provider>
     </SafeAreaProvider>
   );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+};
 
 export default App;

@@ -1,6 +1,9 @@
-apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
-apply plugin: "com.facebook.react"
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.facebook.react")
+    id("com.google.gms.google-services")
+}
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -74,16 +77,16 @@ def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 android {
     ndkVersion rootProject.ext.ndkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.novo"
+    namespace "com.awesome"
     defaultConfig {
-        applicationId "com.novo"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+    applicationId "com.awesome"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode 1
+    versionName "1.0"
+    manifestPlaceholders = [ 'usesCleartextTraffic': 'true' ]
     }
     signingConfigs {
         debug {
@@ -117,3 +120,4 @@ dependencies {
         implementation jscFlavor
     }
 }
+
