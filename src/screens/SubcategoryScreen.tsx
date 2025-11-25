@@ -15,6 +15,7 @@ import { selectSubcategory, IncidentCategory } from '../store/slices/incidentSli
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dimensions, PermissionsAndroid, Platform } from 'react-native';
 import { createTicket } from '../services/ticketService';
+import { createTicket as createTicketAction } from '../store/slices/ticketSlice';
 
 type SubcategoryScreenProps = NativeStackScreenProps<RootStackParamList, 'Subcategory'> & {
   route: {
@@ -246,7 +247,7 @@ const Subcategory: React.FC<SubcategoryScreenProps> = ({ navigation, route }) =>
   const [selectedOption, _setSelectedOption] = useState<string>('');
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
   const holidayScrollRef = useRef<ScrollView>(null);
-  
+
   // Animation function
   const animatePress = () => {
     Animated.sequence([
@@ -268,16 +269,16 @@ const Subcategory: React.FC<SubcategoryScreenProps> = ({ navigation, route }) =>
 
   const handleSubcategorySelect = async (subcategory: string) => {
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const incidentName = category?.title || 'Incident';
-        
+
       dispatch(selectSubcategory(subcategory));
-      
+
       animatePress();
-      
+
       try {
         const navTimeout = setTimeout(() => {
           navigation.navigate('SimpleTicketSuccess', {
@@ -317,22 +318,37 @@ const Subcategory: React.FC<SubcategoryScreenProps> = ({ navigation, route }) =>
         };
         const location = await getLocation();
 
-        const result = await createTicket({ 
-          incidentName, 
+        const result = await createTicket({
+          incidentName,
           subcategory,
           categoryId: (category && (category as any).id) || route.params.categoryId,
           priority: 'medium',
           hasResolverGroup: true,
           location
         });
-        
+
         console.log('Ticket created successfully:', result);
-        
-        
+
+        // Also update Redux state
+        dispatch(createTicketAction({
+          id: result.ticketId,
+          category: incidentName,
+          subcategory,
+          priority: 'High',
+          location: location ? {
+            building: 'Detected Location',
+            floor: 'N/A',
+            room: 'N/A',
+            coordinates: location
+          } : undefined
+        }));
+
+
         navigation.navigate('SimpleTicketSuccess', {
           incidentName,
           subcategory,
           ticketId: result.ticketId,
+          location,
         });
         clearTimeout(navTimeout);
       } catch (error) {
@@ -404,7 +420,7 @@ const Subcategory: React.FC<SubcategoryScreenProps> = ({ navigation, route }) =>
       </View>
 
       {/* Category Info (white background) */}
-      <View style={[styles.categoryHeaderSection, { backgroundColor: colors.headerColor }]}>  
+      <View style={[styles.categoryHeaderSection, { backgroundColor: colors.headerColor }]}>
         <View style={styles.categoryIconContainer}>
           <Text style={styles.categoryIconDark}>{selectedCategory?.icon || '⚙️'}</Text>
         </View>
@@ -418,8 +434,8 @@ const Subcategory: React.FC<SubcategoryScreenProps> = ({ navigation, route }) =>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.instructionText}>Select the specific type of incident:</Text>
-        
-        <Animated.View 
+
+        <Animated.View
           style={[
             styles.optionsContainer,
             { transform: [{ scale: scaleAnim }] }
@@ -464,11 +480,11 @@ const Subcategory: React.FC<SubcategoryScreenProps> = ({ navigation, route }) =>
           })}
         </Animated.View>
 
-        
+
       </ScrollView>
 
       {/* Submit Button */}
-      
+
     </SafeAreaView>
   );
 };
@@ -497,7 +513,7 @@ const styles = StyleSheet.create({
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    color : '#1c5b85ff',
+    color: '#1c5b85ff',
     //padding: 10,
     //backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },

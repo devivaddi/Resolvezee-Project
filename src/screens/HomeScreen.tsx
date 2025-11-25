@@ -18,22 +18,12 @@ import { useAppSelector, useAppDispatch } from '../hooks/redux';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
-import { selectCategory, selectSubcategory, IncidentCategory } from '../store/slices/incidentSlice';
+import { selectCategory, selectSubcategory, resetSelection, IncidentCategory } from '../store/slices/incidentSlice';
 
 
 interface Props {}
 
 const { width } = Dimensions.get('window');
-
-// Emergency contacts data
-// const emergencyContactsIndia = [
-//   { id: '1', label: 'Police', number: '100' },
-//   { id: '2', label: 'Ambulance', number: '102' },
-//   { id: '3', label: 'Fire', number: '101' },
-//   { id: '4', label: 'National Emergency', number: '112' },
-// ];
-
-// Example feed-style holiday data
 const holidayFeed = [
   {
     id: '1',
@@ -171,6 +161,8 @@ const Home: React.FC<Props> = () => {
 
   // List View button handler
   const handleListViewPress = () => {
+    // Clear any existing category/subcategory filter so list view loads all tickets
+    dispatch(resetSelection());
     navigation.navigate('IncidentList');
   };
 
@@ -656,10 +648,10 @@ const styles = StyleSheet.create({
   topBarCustom: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 2,
     marginHorizontal: 10,
-    marginBottom: 2,
-    gap: 4,
+    marginBottom: 0,
+    gap: 2,
   },
   headingCustom: {
     fontSize: 40,
@@ -744,7 +736,7 @@ const styles = StyleSheet.create({
     flexDirection: width > 768 ? 'row' : 'column',
     padding: 2,
     paddingHorizontal: 20,
-    gap: 8,
+    gap: 6,
   },
   leftColumn: {
     flex: width > 768 ? 2 : undefined,
@@ -1144,7 +1136,7 @@ const styles = StyleSheet.create({
   incidentCategoryHeader: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 6,
+    marginBottom: 4,
     color: '#1c5b85ff', // Blue
     textAlign: 'left',
     letterSpacing: 1.2,
@@ -1160,11 +1152,11 @@ const styles = StyleSheet.create({
   },
   incidentCategoryCard: {
     width: '48%',
-    height: 120,      // Add this line (adjust as needed)
+    height: 100,      // Add this line (adjust as needed)
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
     backgroundColor: '#c3e7ff',
     overflow: 'hidden',
     shadowColor: '#9db3db',

@@ -145,6 +145,66 @@ export async function getTicketsByCategoryAndSubcategory(categoryTitle: string, 
   return snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) }));
 }
 
+// Fetch all raised tickets across all categories/subcategories using a collectionGroup query
+export async function getAllTickets() {
+  const snap = await firestore()
+    .collectionGroup('tickets')
+    .orderBy('timestamp', 'desc')
+    .get();
+  return snap.docs
+    .map((d) => ({ id: d.id, ...(d.data() as any) }))
+    .filter((d: any) => d && (d.ticketNumber || d.categoryTitle));
+}
+
+// Fallback: traverse the hierarchy when collectionGroup is blocked or returns empty
+export async function getAllTicketsTraverse() {
+  const db = firestore();
+  const cats = await db.collection('tickets').get();
+  const perCat = await Promise.all(
+    cats.docs.map(async (cat: any) => {
+      const subSnap = await db.collection('tickets').doc(cat.id).collection('subcategories').get();
+      const perSub = await Promise.all(
+        subSnap.docs.map(async (sub: any) => {
+          const tSnap = await db
+            .collection('tickets')
+            .doc(cat.id)
+            .collection('subcategories')
+            .doc(sub.id)
+            .collection('tickets')
+            .get();
+          return tSnap.docs.map((d: any) => ({ id: d.id, ...(d.data() as any) }));
+        })
+      );
+      return perSub.flat();
+    })
+  );
+  return perCat.flat();
+}
+
+export async function getAllTicketsTraverseLegacy() {
+  const db = firestore();
+  const cats = await db.collection('resolve_tickets').get();
+  const perCat = await Promise.all(
+    cats.docs.map(async (cat: any) => {
+      const subSnap = await db.collection('resolve_tickets').doc(cat.id).collection('subcategories').get();
+      const perSub = await Promise.all(
+        subSnap.docs.map(async (sub: any) => {
+          const tSnap = await db
+            .collection('resolve_tickets')
+            .doc(cat.id)
+            .collection('subcategories')
+            .doc(sub.id)
+            .collection('tickets')
+            .get();
+          return tSnap.docs.map((d: any) => ({ id: d.id, ...(d.data() as any) }));
+        })
+      );
+      return perSub.flat();
+    })
+  );
+  return perCat.flat();
+}
+
 export async function getTicketFromHierarchy(
   categoryTitle: string,
   subcategoryName: string,

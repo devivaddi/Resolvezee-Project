@@ -91,7 +91,7 @@ const ticketSlice = createSlice({
           department: "Safety & Compliance",
           avatar: "EC",
           email: "emily.chen@company.com",
-          phone: "+1 (555) 123-4567",
+          phone: "+91 9390662649",
         },
         location: action.payload.location || {
           building: "Main Production Facility",
