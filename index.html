@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolveze - Support Ticket System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #2c3e50;
+            background-color: #f5f7fa;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 250px;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to Resolveze</h1>
+        <p>Efficient Support Ticket Management System</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>About Us</h2>
+            <p>Resolveze is a comprehensive support ticket management system designed to streamline incident reporting and resolution processes.</p>
+            <p>Our platform connects users with support teams, ensuring quick and efficient handling of all your support needs.</p>
+        </div>
+
+        <div class="card">
+            <h2>Our Services</h2>
+            <ul>
+                <li>24/7 Incident Reporting</li>
+                <li>Real-time Ticket Tracking</li>
+                <li>Automated Notifications</li>
+                <li>Multi-platform Support</li>
+                <li>Secure Data Handling</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Legal</h2>
+            <p>Please review our policies to understand how we handle your data and the terms governing your use of our services.</p>
+            <a href="/privacy.html" class="btn">Privacy Policy</a>
+            <a href="/terms.html" class="btn">Terms of Service</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Resolveze. All rights reserved.</p>
+        <p>Contact: support@resolveze.com</p>
+    </div>
+</body>
+</html>
